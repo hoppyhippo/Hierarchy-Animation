@@ -24,7 +24,7 @@ void ofApp::setup() {
 	ofEnableDepthTest();
 	mainCam.setDistance(15);
 	mainCam.setNearClip(.1);
-	
+
 	sideCam.setPosition(40, 0, 0);
 	sideCam.lookAt(glm::vec3(0, 0, 0));
 	topCam.setNearClip(.1);
@@ -46,7 +46,7 @@ void ofApp::setup() {
 	//
 	// ground plane
 	//
-	scene.push_back(new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0)));   
+	scene.push_back(new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0)));
 
 	/*Sphere* sun = new Sphere(glm::vec3(0,0,0), 3.0, ofColor::yellow);
 	Sphere* earth = new Sphere(glm::vec3(7,1,0), 1.0, ofColor::blue);
@@ -66,15 +66,15 @@ void ofApp::setup() {
 	setupKeyframeUI();
 }
 
- 
+
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
 	//scene[1]->rotation.y++;
 	//scene[2]->rotation.y++;
 	//scene[2]->scale += .1;
 	if (objSelected()) {
 		glm::vec3 rotation = selected[0]->rotation;
-		rotationText = 
+		rotationText =
 			"X: " + std::to_string(rotation.x) +
 			", Y: " + std::to_string(rotation.y) +
 			", Z: " + std::to_string(rotation.z);
@@ -115,7 +115,7 @@ void ofApp::update(){
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw() {
 
 	theCam->begin();
 	ofNoFill();
@@ -173,7 +173,7 @@ void ofApp::draw(){
 				buf << "Position: (" << kf.position.x << ", " << kf.position.y << ", " << kf.position.z << "), ";
 				buf << "Rotation: (" << kf.rotation.x << ", " << kf.rotation.y << ", " << kf.rotation.z << "), ";
 				buf << "Scale: (" << kf.scale.x << ", " << kf.scale.y << ", " << kf.scale.z << ")";
-				ofDrawBitmapString(buf.str(), 5, yOffset+30);
+				ofDrawBitmapString(buf.str(), 5, yOffset + 30);
 				yOffset += 30;
 			}
 		}
@@ -192,6 +192,7 @@ void ofApp::setupKeyframeUI() {
 	saveBtn.setup("Save, s");
 	loadBtn.setup("Load, l");
 	frameSlider.setup("Frame", frame, frameBegin, frameEnd);
+	useEaseInterpolation.setup("Use Ease Interpolation", false);
 
 	keyframePanel.add(&addKeyframeBtn);
 	keyframePanel.add(&deleteKeyframeBtn);
@@ -200,6 +201,7 @@ void ofApp::setupKeyframeUI() {
 	keyframePanel.add(&saveBtn);
 	keyframePanel.add(&loadBtn);
 	keyframePanel.add(&frameSlider);
+	keyframePanel.add(&useEaseInterpolation);
 
 	// Setup event listeners
 	addKeyframeBtn.addListener(this, &ofApp::setKeyFrame);
@@ -210,6 +212,8 @@ void ofApp::setupKeyframeUI() {
 	loadBtn.addListener(this, &ofApp::loadFile);
 	frameSlider.addListener(this, &ofApp::frameChanged);
 }
+
+
 
 void ofApp::drawTimeline() {
 	// Draw timeline background
@@ -291,21 +295,21 @@ void ofApp::drawAxis(glm::mat4 m, float len) {
 
 	// X Axis
 	ofSetColor(ofColor(255, 0, 0));
-	ofDrawLine(glm::vec3(m*glm::vec4(0, 0, 0, 1)), glm::vec3(m*glm::vec4(len, 0, 0, 1)));
+	ofDrawLine(glm::vec3(m * glm::vec4(0, 0, 0, 1)), glm::vec3(m * glm::vec4(len, 0, 0, 1)));
 
 
 	// Y Axis
 	ofSetColor(ofColor(0, 255, 0));
-	ofDrawLine(glm::vec3(m*glm::vec4(0, 0, 0, 1)), glm::vec3(m*glm::vec4(0, len, 0, 1)));
+	ofDrawLine(glm::vec3(m * glm::vec4(0, 0, 0, 1)), glm::vec3(m * glm::vec4(0, len, 0, 1)));
 
 	// Z Axis
 	ofSetColor(ofColor(0, 0, 255));
-	ofDrawLine(glm::vec3(m*glm::vec4(0, 0, 0, 1)), glm::vec3(m*glm::vec4(0, 0, len, 1)));
+	ofDrawLine(glm::vec3(m * glm::vec4(0, 0, 0, 1)), glm::vec3(m * glm::vec4(0, 0, len, 1)));
 }
 
 // print C++ code for obj tranformation channels. (for debugging);
 //
-void ofApp::printChannels(SceneObject *obj) {
+void ofApp::printChannels(SceneObject* obj) {
 	cout << "position = glm::vec3(" << obj->position.x << "," << obj->position.y << "," << obj->position.z << ");" << endl;
 	cout << "rotation = glm::vec3(" << obj->rotation.x << "," << obj->rotation.y << "," << obj->rotation.z << ");" << endl;
 	cout << "scale = glm::vec3(" << obj->scale.x << "," << obj->scale.y << "," << obj->scale.z << ");" << endl;
@@ -530,7 +534,7 @@ void ofApp::loadFile() {
 
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(int key) {
 
 	switch (key) {
 	case OF_KEY_ALT:
@@ -620,7 +624,7 @@ void ofApp::keyPressed(int key) {
 	case 'z':
 		bRotateZ = true;
 		break;
-	case OF_KEY_F1: 
+	case OF_KEY_F1:
 		theCam = &mainCam;
 		break;
 	case OF_KEY_F2:
@@ -649,7 +653,7 @@ void ofApp::keyPressed(int key) {
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::mouseMoved(int x, int y) {
 
 }
 
@@ -657,7 +661,7 @@ void ofApp::mouseMoved(int x, int y ){
 void ofApp::mouseDragged(int x, int y, int button) {
 
 	if (objSelected() && bDrag) {
-		glm::vec3 point; 
+		glm::vec3 point;
 		mouseToDragPlane(x, y, point);
 		if (bRotateX) {
 			selected[0]->rotation += glm::vec3((point.x - lastPoint.x) * 20.0, 0, 0);
@@ -680,7 +684,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 //  normal to the view axis of the camera passing through the point of the selected object.
 //  If no object selected, the plane passing through the world origin is used.
 //
-bool ofApp::mouseToDragPlane(int x, int y, glm::vec3 &point) {
+bool ofApp::mouseToDragPlane(int x, int y, glm::vec3& point) {
 	glm::vec3 p = theCam->screenToWorld(glm::vec3(x, y, 0));
 	glm::vec3 d = p - theCam->getPosition();
 	glm::vec3 dn = glm::normalize(d);
@@ -703,7 +707,7 @@ bool ofApp::mouseToDragPlane(int x, int y, glm::vec3 &point) {
 // Provides functionality of single selection and if something is already selected,
 // sets up state for translation/rotation of object using mouse.
 //
-void ofApp::mousePressed(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button) {
 	if (isMouseOverTimeline(x, y)) {
 		// Check if we're clicking near any keyframe markers
 		if (objSelected()) {
@@ -750,7 +754,7 @@ void ofApp::mousePressed(int x, int y, int button){
 	//
 	// test if something selected
 	//
-	vector<SceneObject *> hits;
+	vector<SceneObject*> hits;
 
 	glm::vec3 p = theCam->screenToWorld(glm::vec3(x, y, 0));
 	glm::vec3 d = p - theCam->getPosition();
@@ -759,9 +763,9 @@ void ofApp::mousePressed(int x, int y, int button){
 	// check for selection of scene objects
 	//
 	for (int i = 0; i < scene.size(); i++) {
-		
+
 		glm::vec3 point, norm;
-		
+
 		//  We hit an object
 		//
 		if (scene[i]->isSelectable && scene[i]->intersect(Ray(p, dn), point, norm)) {
@@ -772,7 +776,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
 	// if we selected more than one, pick nearest
 	//
-	SceneObject *selectedObj = NULL;
+	SceneObject* selectedObj = NULL;
 	if (hits.size() > 0) {
 		selectedObj = hits[0];
 		float nearestDist = std::numeric_limits<float>::infinity();
@@ -781,7 +785,7 @@ void ofApp::mousePressed(int x, int y, int button){
 			if (dist < nearestDist) {
 				nearestDist = dist;
 				selectedObj = hits[n];
-			}	
+			}
 		}
 	}
 	if (selectedObj) {
@@ -795,33 +799,32 @@ void ofApp::mousePressed(int x, int y, int button){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseReleased(int x, int y, int button) {
 	bDrag = false;
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
+void ofApp::mouseEntered(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
+void ofApp::mouseExited(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
+void ofApp::windowResized(int w, int h) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
+void ofApp::gotMessage(ofMessage msg) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 }
-
