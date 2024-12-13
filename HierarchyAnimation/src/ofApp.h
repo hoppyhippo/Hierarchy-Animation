@@ -148,25 +148,26 @@ public:
 	// this "cycles" until you call resetKeyFrames();
 	//
 	void setKeyFrame() {
-		if (objSelected()) {
-			Joint* selectedJoint = dynamic_cast<Joint*>(selected[0]);
-			if (selectedJoint) {
-				cout << "Setting keyframe at frame: " << frame << endl;
-				KeyFrame newKeyFrame;
-				newKeyFrame.frame = frame;
-				newKeyFrame.position = selectedJoint->position;
-				newKeyFrame.rotation = selectedJoint->rotation;
-				newKeyFrame.scale = selectedJoint->scale;
+		if (selected.empty()) {
+			cout << "No object selected. Cannot set keyframe." << endl;
+			return;
+		}
 
-				selectedJoint->keyFrames.push_back(newKeyFrame);
-				cout << "Keyframe set. Total keyframes: " << selectedJoint->keyFrames.size() << endl;
+		for (auto obj : selected) {
+			Joint* joint = dynamic_cast<Joint*>(obj);
+			if (joint) {
+				KeyFrame keyFrame;
+				keyFrame.frame = frame;
+				keyFrame.position = joint->position;
+				keyFrame.rotation = joint->rotation;
+				keyFrame.scale = joint->scale;
+
+				joint->keyFrames.push_back(keyFrame);
+				cout << "Setting keyframe at frame: " << frame << endl;
 			}
 			else {
 				cout << "Cannot set keyframe." << endl;
 			}
-		}
-		else {
-			cout << "No object selected. Cannot set keyframe." << endl;
 		}
 	}
 
@@ -204,18 +205,21 @@ public:
 			return;
 		}
 
-		Joint* joint = dynamic_cast<Joint*>(selected[0]);
+		for (auto obj : selected) {
+			Joint* joint = dynamic_cast<Joint*>(obj);
+			if (joint) {
+				auto it = std::remove_if(joint->keyFrames.begin(), joint->keyFrames.end(),
+					[&](const KeyFrame& k) { return k.frame == frame; });
+				joint->keyFrames.erase(it, joint->keyFrames.end());
 
-		auto& keyFrames = joint->keyFrames;
-		auto it = std::remove_if(keyFrames.begin(), keyFrames.end(),
-			[&](const KeyFrame& kf) { return kf.frame == frame; });
-
-		if (it != keyFrames.end()) {
-			keyFrames.erase(it, keyFrames.end());
-			cout << "Deleted keyframe for frame: " << frame << endl;
-		}
-		else {
-			cout << "No keyframe found at frame: " << frame << endl;
+				if (it != keyFrames.end()) {
+					keyFrames.erase(it, keyFrames.end());
+					cout << "Deleted keyframe for frame: " << frame << endl;
+				}
+				else {
+					cout << "No keyframe found at frame: " << frame << endl;
+				}
+			}
 		}
 	}
 

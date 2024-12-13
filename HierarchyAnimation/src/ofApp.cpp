@@ -788,13 +788,11 @@ void ofApp::mousePressed(int x, int y, int button) {
 			}
 		}
 	}
-	if (selectedObj) {
+	if (selectedObj && std::find(selected.begin(), selected.end(), selectedObj) == selected.end()) {
 		selected.push_back(selectedObj);
+		selectedObj->isSelected = true;
 		bDrag = true;
 		mouseToDragPlane(x, y, lastPoint);
-	}
-	else {
-		selected.clear();
 	}
 }
 
