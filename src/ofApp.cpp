@@ -217,9 +217,29 @@ void ofApp::drawTimeline() {
 	if (objSelected()) {
 		Joint* selectedJoint = dynamic_cast<Joint*>(selected[0]);
 		if (selectedJoint) {
-			ofSetColor(ofColor::yellow);
+			int mouseX = ofGetMouseX();
+			int mouseY = ofGetMouseY();
+
 			for (const auto& kf : selectedJoint->keyFrames) {
 				float x = ofMap(kf.frame, frameBegin, frameEnd, 10, timelineWidth + 10);
+
+				// Check if mouse is hovering over keyframe
+				float dist = glm::distance(glm::vec2(mouseX, mouseY),
+					glm::vec2(x, timelineY + timelineHeight / 2));
+
+				if (dist < keyframeMarkerSize) {
+					// Draw hover effect
+					ofSetColor(ofColor::red);
+					ofDrawCircle(x, timelineY + timelineHeight / 2, keyframeMarkerSize + 2);
+
+					// Draw tooltip with frame number
+					ofSetColor(ofColor::white);
+					string info = "Frame: " + ofToString(kf.frame);
+					ofDrawBitmapString(info, x - 30, timelineY - 10);
+				}
+
+				// Draw normal keyframe marker
+				ofSetColor(ofColor::yellow);
 				ofDrawCircle(x, timelineY + timelineHeight / 2, keyframeMarkerSize);
 			}
 		}
@@ -551,7 +571,36 @@ bool ofApp::mouseToDragPlane(int x, int y, glm::vec3& point) {
 // sets up state for translation/rotation of object using mouse.
 //
 void ofApp::mousePressed(int x, int y, int button) {
+	if (isMouseOverTimeline(x, y)) {
+		// Check if we're clicking near any keyframe markers
+		if (objSelected()) {
+			Joint* selectedJoint = dynamic_cast<Joint*>(selected[0]);
+			if (selectedJoint) {
+				for (auto& kf : selectedJoint->keyFrames) {
+					float kfX = ofMap(kf.frame, frameBegin, frameEnd, 10, timelineWidth + 10);
+					float dist = glm::distance(glm::vec2(x, y), glm::vec2(kfX, timelineY + timelineHeight / 2));
 
+					if (dist < keyframeMarkerSize) {
+						// Right click to delete keyframe
+						if (button == OF_MOUSE_BUTTON_RIGHT) {
+							auto it = std::remove_if(selectedJoint->keyFrames.begin(), selectedJoint->keyFrames.end(),
+								[&](const KeyFrame& k) { return k.frame == kf.frame; });
+							selectedJoint->keyFrames.erase(it, selectedJoint->keyFrames.end());
+							return;
+						}
+						// Left click to select frame
+						else if (button == OF_MOUSE_BUTTON_LEFT) {
+							frame = kf.frame;
+							frameSlider = frame;
+							return;
+						}
+					}
+				}
+			}
+		}
+		handleTimelineClick(x, y);
+		return;
+	}
 	// if we are moving the camera around, don't allow selection
 	//
 	if (mainCam.getMouseInputEnabled()) return;
