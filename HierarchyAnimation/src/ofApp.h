@@ -210,15 +210,17 @@ public:
 			if (joint) {
 				auto it = std::remove_if(joint->keyFrames.begin(), joint->keyFrames.end(),
 					[&](const KeyFrame& k) { return k.frame == frame; });
-				joint->keyFrames.erase(it, joint->keyFrames.end());
 
-				if (it != keyFrames.end()) {
-					keyFrames.erase(it, keyFrames.end());
+				if (it != joint->keyFrames.end()) {
+					joint->keyFrames.erase(it, joint->keyFrames.end());
 					cout << "Deleted keyframe for frame: " << frame << endl;
 				}
 				else {
 					cout << "No keyframe found at frame: " << frame << endl;
 				}
+			}
+			else {
+				cout << "Selected object is not a joint. Cannot delete keyframe." << endl;
 			}
 		}
 	}
